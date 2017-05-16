@@ -13,11 +13,6 @@ import (
 
 var httpClient = &http.Client{Timeout: time.Second * 3}
 
-type request struct {
-	Text   string `json:"text"`
-	Target string `json:"target"`
-}
-
 func translateHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -55,5 +50,7 @@ func translateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(resp)
+	if err = json.NewEncoder(w).Encode(resp); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
 }
